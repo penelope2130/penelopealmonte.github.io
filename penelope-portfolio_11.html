@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Penelope Almonte — Product Designer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #FDFDFD;
+      --bg-card: #FDFDFD;
+      --ink: #16141B;
+      --ink-mid: #303030;
+      --ink-faint: #C8C8C8;
+      --accent: #CFEB37;
+      --accent-secondary: #1B29AF;
+      --border: rgba(22,20,27,0.10);
+      --serif: 'Playfair Display', Georgia, serif;
+      --sans: 'Inter', system-ui, sans-serif;
+      --radius: 12px;
+      --nav-h: 60px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      background: rgba(253,253,253,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: none;
+      z-index: 100;
+    }
+
+    .nav-name {
+      font-family: var(--serif);
+      font-size: 21px;
+      font-weight: 600;
+      color: var(--ink);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--ink-mid);
+      text-decoration: none;
+      transition: color 0.15s;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+    }
+
+    .nav-links a:hover { font-weight: 400; color: var(--ink); }
+    .nav-links a.active { font-weight: 400; color: var(--ink); }
+    body.on-about nav { background: #CFEB37; border-bottom: none; }
+    body.on-about .nav-name { color: var(--ink); }
+    body.on-about .nav-links a { color: var(--ink); font-weight: 400; }
+    body.on-about .nav-links a:hover { color: var(--ink); opacity: 0.7; }
+
+    /* PAGE */
+    .page {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* VIEWS */
+    .view { display: none; background: var(--bg); }
+    .view.active { display: block; }
+
+    /* WORK H1 */
+    .work-h1 {
+      font-family: var(--serif);
+      font-size: 180px;
+      font-weight: 400;
+      letter-spacing: -0.04em;
+      line-height: 0.95;
+      color: var(--ink);
+    }
+
+    /* CONTACT H1 — isolated, no inheritance */
+    h1.contact-h1 {
+      font-family: var(--serif) !important;
+      font-size: 180px !important;
+      font-weight: 400 !important;
+      letter-spacing: -0.04em !important;
+      line-height: 0.95 !important;
+      color: var(--ink) !important;
+      margin-bottom: 80px !important;
+    }
+
+    /* SECTION */
+    .section {
+      padding: 80px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .section:last-child { border-bottom: none; }
+
+    /* PROJECT CARDS */
+    .project-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 16px;
+    }
+
+    .project-card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #FFFFFF;
+      border: none;
+      box-shadow: 0 4px 24px rgba(22,20,27,0.08);
+      transition: transform 0.25s, background 0.25s, color 0.25s, box-shadow 0.25s;
+      cursor: pointer;
+    }
+
+    .project-card:hover { transform: translateY(-2px); background: var(--ink); box-shadow: 0 8px 32px rgba(22,20,27,0.16); }
+    .project-card:hover .project-title { color: #FFFFFF; }
+    .project-card:hover .project-type { color: rgba(255,255,255,0.6); }
+    .project-card:hover .project-year { color: rgba(255,255,255,0.4); }
+
+    .project-card-img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .project-card-img img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+
+    .project-card:hover .project-card-img img { transform: scale(1.03); }
+
+    .water-canvas { display: none; }
+
+    .ph {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      background: #C8C8C8;
+    }
+
+    .project-card-body {
+      padding: 14px 18px 16px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      border-top: none;
+    }
+
+    .project-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 2px;
+      letter-spacing: -0.01em;
+    }
+
+    .project-type {
+      font-size: 12px;
+      color: var(--ink-mid);
+      font-weight: 600;
+    }
+
+    .project-year {
+      font-size: 12px;
+      color: var(--ink-faint);
+      flex-shrink: 0;
+    }
+
+    /* CONTACT INFO */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+      gap: 16px;
+    }
+
+    .info-row:first-child { border-top: 1px solid var(--border); }
+
+    .info-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+    }
+
+    .info-val {
+      font-size: 16px;
+      color: var(--ink-mid);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .info-val:hover { color: var(--ink); }
+
+    /* FORM */
+    .form-card {
+      background: #FDFDFD;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px 44px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-mid);
+      margin-bottom: 8px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: var(--sans);
+      font-size: 16px;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.15s;
+      margin-bottom: 20px;
+    }
+
+    .form-input:focus { border-color: var(--accent-secondary); }
+
+    textarea.form-input {
+      resize: vertical;
+      line-height: 1.6;
+      min-height: 120px;
+    }
+
+    /* ABOUT PAGE */
+    .about-view {
+      background: #CFEB37;
+      min-height: 100vh;
+      padding-top: var(--nav-h);
+    }
+
+    .about-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 64px 24px 80px;
+      box-sizing: border-box;
+    }
+
+    .about-name {
+      font-family: var(--serif);
+      font-size: clamp(48px, 20.8vw, 300px);
+      font-weight: 400;
+      letter-spacing: -0.03em;
+      line-height: 0.85;
+      color: var(--ink);
+      margin-bottom: 80px;
+    }
+
+    .about-role {
+      font-family: var(--serif);
+      font-size: clamp(20px, 2.5vw, 28px);
+      font-weight: 600;
+      font-style: italic;
+      color: var(--ink-mid);
+      letter-spacing: -0.02em;
+      margin-bottom: 48px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid rgba(22,20,27,0.12);
+    }
+
+    .about-bio p {
+      font-size: 48px;
+      color: var(--ink-mid);
+      line-height: 1.2;
+      font-weight: 400;
+      margin-bottom: 22px;
+    }
+
+    .about-bio p:last-child { margin-bottom: 0; }
+    .about-bio p strong { color: var(--ink); font-weight: 600; }
+
+    .about-cta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 40px;
+      padding-top: 40px;
+      border-top: none;
+      padding-bottom: 64px;
+    }
+
+    .about-photo {
+      width: 100%;
+      aspect-ratio: 16/7;
+      overflow: hidden;
+      background: rgba(22,20,27,0.08);
+    }
+
+    .about-photo-placeholder {
+      width: 100%; height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: rgba(22,20,27,0.35);
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* BUTTONS */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--accent);
+      color: var(--ink);
+      padding: 11px 22px;
+      border-radius: 100px;
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      transition: background 0.2s, color 0.2s, transform 0.15s;
+      white-space: nowrap;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover { background: var(--ink); color: var(--bg); transform: translateY(-1px); }
+
+    .btn-dark {
+      background: var(--ink);
+      color: var(--bg);
+    }
+
+    .btn-dark:hover {
+      background: transparent !important;
+      color: var(--ink) !important;
+      border: 2px solid var(--ink);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: transparent;
+      color: var(--ink-mid);
+      padding: 11px 22px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-outline:hover { border-color: var(--ink-mid); color: var(--ink); }
+
+    /* FOOTER */
+    footer {
+      padding: 32px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    footer p { font-size: 12px; color: var(--ink-faint); }
+    footer a { font-size: 12px; color: var(--ink-faint); text-decoration: none; cursor: pointer; }
+    footer a:hover { color: var(--ink-mid); }
+
+    .about-footer {
+      background: var(--accent);
+      padding: 32px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .about-footer p, .about-footer a {
+      color: var(--ink) !important;
+    }
+
+    /* FADE UP */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* MOBILE */
+    @media (max-width: 700px) {
+      nav { padding: 0 20px; }
+      .nav-links { gap: 16px; }
+      .page { padding: 0 20px; }
+      .section { padding: 56px 0; }
+      .project-grid { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; }
+      h1.contact-h1 { font-size: 72px !important; }
+      .about-photo { aspect-ratio: 4/3; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="main-content" style="position:relative;z-index:10;transition:transform 0.7s cubic-bezier(0.16,1,0.3,1);min-height:100vh;">
+  <nav>
+    <span class="nav-name" onclick="showView('work')">Penelope Almonte</span>
+    <ul class="nav-links">
+      <li><a onclick="showView('work')" id="nav-work" class="active">Work</a></li>
+      <li><a onclick="showView('about')" id="nav-about">About</a></li>
+      <li><a onclick="showView('contact')" id="nav-contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- WORK -->
+  <div class="view active" id="view-work">
+    <div class="page">
+      <section style="padding-top: calc(var(--nav-h) + 48px); padding-bottom: 32px;">
+        <h1 class="work-h1 fade-up">Work</h1>
+      </section>
+
+      <section class="section">
+        <div class="project-grid">
+          <div class="project-card fade-up" onclick="showView('case-study')">
+            <div class="project-card-img"><img src="img1.png" alt="Patient portal redesign"><canvas class="water-canvas"></canvas></div>
+            <div class="project-card-body">
+              <div><div class="project-title">Patient portal redesign</div><div class="project-type">Healthcare · UX Design</div></div>
+              <div class="project-year">2024</div>
+            </div>
+          </div>
+          <div class="project-card fade-up">
+            <div class="project-card-img"><img src="img2.png" alt="Checkout redesign"><canvas class="water-canvas"></canvas></div>
+            <div class="project-card-body">
+              <div><div class="project-title">Checkout redesign</div><div class="project-type">E-commerce</div></div>
+              <div class="project-year">2024</div>
+            </div>
+          </div>
+          <div class="project-card fade-up">
+            <div class="project-card-img"><img src="img3.png" alt="Provider scheduling tool"><canvas class="water-canvas"></canvas></div>
+            <div class="project-card-body">
+              <div><div class="project-title">Provider scheduling tool</div><div class="project-type">Healthcare</div></div>
+              <div class="project-year">2023</div>
+            </div>
+          </div>
+          <div class="project-card fade-up">
+            <div class="project-card-img"><img src="img4.png" alt="Design system"><canvas class="water-canvas"></canvas></div>
+            <div class="project-card-body">
+              <div><div class="project-title">Design system</div><div class="project-type">E-commerce</div></div>
+              <div class="project-year">2022</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <p>© 2026 Penelope Almonte</p>
+        <a onclick="window.scrollTo({top:0,behavior:'smooth'})">Back to top ↑</a>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="view" id="view-about">
+    <div class="about-view">
+      <div class="about-inner">
+        <div class="fade-up">
+          <h1 class="about-name">About</h1>
+        </div>
+        <div class="about-bio fade-up">
+          <p>I'm a product designer based in New York City, currently at <strong>Omnicom Production</strong>, where I design digital tools that sit at the intersection of healthcare and technology. I've been doing this for five years — long enough to know that the best interfaces are the ones people never have to think about.</p>
+          <p>My work focuses on <strong>healthcare and e-commerce</strong> — two spaces where the stakes of bad design are unusually high. In healthcare, a confusing interface isn't just frustrating; it can mean a patient doesn't get the care they need. That weight is something I carry into every project.</p>
+          <p>My process is research-first. I spend a lot of time with the people who will actually use what I'm building — watching them struggle, listening to what they say, and more importantly, watching what they do. The gap between those two things is where the real design work lives.</p>
+          <p>Outside of work, I'm drawn to anything that sits at the edge of design and communication — <strong>type, editorial design, wayfinding systems</strong>. I believe good design is honest. It doesn't hide complexity; it makes complexity feel manageable.</p>
+        </div>
+        <div class="about-cta fade-up">
+          <a href="/resume.pdf" target="_blank" class="btn-primary btn-dark">
+            Download resume
+            <svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M7 2v8M3 7l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/in/pen-almonte/" target="_blank" rel="noopener" class="btn-outline">LinkedIn ↗</a>
+          <a href="mailto:hello@penelopealmonte.com" class="btn-outline">Say hello ↗</a>
+          <a href="https://yourname.substack.com" target="_blank" rel="noopener" class="btn-outline">Substack ↗</a>
+        </div>
+      </div>
+
+      <!-- PHOTO — replace with: <img src="your-photo.jpg" style="width:100%;height:100%;object-fit:cover;"> -->
+      <div class="about-photo fade-up">
+        <div class="about-photo-placeholder">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <circle cx="16" cy="11" r="6" stroke="currentColor" stroke-width="1.2"/>
+            <path d="M4 28c0-6.627 5.373-12 12-12s12 5.373 12 12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+          Add your photo here
+        </div>
+      </div>
+    </div>
+    <div class="about-footer">
+      <p style="font-size:12px;color:var(--ink-faint);">© 2026 Penelope Almonte</p>
+      <a style="font-size:12px;color:var(--ink-faint);text-decoration:none;cursor:pointer;" onclick="window.scrollTo({top:0,behavior:'smooth'})">Back to top ↑</a>
+    </div>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="view" id="view-contact">
+    <div class="page">
+      <section style="padding-top: calc(var(--nav-h) + 64px); padding-bottom: 96px;">
+
+        <h1 class="contact-h1 fade-up">Contact</h1>
+
+        <div class="contact-grid">
+          <div class="fade-up">
+            <p style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:32px;">Contact info</p>
+            <div class="info-row"><span class="info-label">Email</span><a href="mailto:penelope.aalmonte@gmail.com" class="info-val">penelope.aalmonte@gmail.com</a></div>
+            <div class="info-row"><span class="info-label">Phone</span><a href="tel:+13479773652" class="info-val">+1 (347) 977-3652</a></div>
+            <div class="info-row"><span class="info-label">LinkedIn</span><a href="https://www.linkedin.com/in/pen-almonte/" target="_blank" rel="noopener" class="info-val">linkedin.com/in/pen-almonte ↗</a></div>
+            <div class="info-row"><span class="info-label">Location</span><span class="info-val">New York City, USA</span></div>
+          </div>
+
+          <div class="form-card fade-up">
+            <p style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:32px;">Send a message</p>
+            <label class="form-label">Name</label>
+            <input type="text" placeholder="Your name" class="form-input">
+            <label class="form-label">Email</label>
+            <input type="email" placeholder="your@email.com" class="form-input">
+            <label class="form-label">Message</label>
+            <textarea placeholder="Tell me about your project..." class="form-input"></textarea>
+            <button class="btn-primary" onclick="this.textContent='Message sent ✓';this.style.background='var(--accent-secondary)';this.style.pointerEvents='none';">
+              Send message
+              <svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+      </section>
+      <footer>
+        <p>© 2026 Penelope Almonte</p>
+        <a onclick="window.scrollTo({top:0,behavior:'smooth'})">Back to top ↑</a>
+      </footer>
+    </div>
+  </div>
+
+  <!-- CASE STUDY -->
+  <div class="view" id="view-case-study">
+    <div class="page">
+
+      <!-- HEADER -->
+      <section style="padding-top: calc(var(--nav-h) + 48px); padding-bottom: 40px;">
+        <h1 class="work-h1 fade-up">Patient portal<br>redesign</h1>
+
+        <!-- META ROW -->
+        <div class="fade-up" style="display:flex;gap:0;margin-top:32px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+          <div style="padding:16px 40px 16px 0;border-right:1px solid var(--border);margin-right:40px;">
+            <div style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px;">Company</div>
+            <div style="font-size:16px;color:var(--ink-mid);">Omnicom Production</div>
+          </div>
+          <div style="padding:16px 40px 16px 0;border-right:1px solid var(--border);margin-right:40px;">
+            <div style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px;">Role</div>
+            <div style="font-size:16px;color:var(--ink-mid);">Lead product designer</div>
+          </div>
+          <div style="padding:16px 40px 16px 0;border-right:1px solid var(--border);margin-right:40px;">
+            <div style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px;">Duration</div>
+            <div style="font-size:16px;color:var(--ink-mid);">6 months</div>
+          </div>
+          <div style="padding:16px 0;">
+            <div style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px;">Year</div>
+            <div style="font-size:16px;color:var(--ink-mid);">2024</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- HERO IMAGE -->
+      <div class="fade-up" style="width:100%;aspect-ratio:16/7;overflow:hidden;background:#C8C8C8;margin-bottom:96px;">
+        <!-- Replace with: <img src="your-hero.jpg" style="width:100%;height:100%;object-fit:cover;"> -->
+        <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--ink-faint);font-size:12px;letter-spacing:0.06em;text-transform:uppercase;">Add hero image</div>
+      </div>
+
+      <!-- SECTION 1: CHALLENGE -->
+      <section style="padding-bottom:96px;border-bottom:1px solid var(--border);margin-bottom:96px;">
+        <p style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:24px;" class="fade-up">Challenge & Approach</p>
+        <h2 class="fade-up" style="font-family:var(--serif);font-size:clamp(28px,3.5vw,48px);font-weight:400;letter-spacing:-0.02em;line-height:1.15;color:var(--ink);max-width:760px;margin-bottom:28px;">Redesigned the patient portal to make accessing care feel less like a chore</h2>
+        <div style="max-width:640px;" class="fade-up">
+          <p style="font-size:16px;color:var(--ink-mid);line-height:1.85;font-weight:400;margin-bottom:20px;">The existing portal spanned dozens of patient touchpoints — appointment booking, messaging, lab results, referrals — but inconsistent UI patterns and one-off builds made it feel fragmented and operationally heavy for both patients and clinical staff.</p>
+          <p style="font-size:16px;color:var(--ink-mid);line-height:1.85;font-weight:400;">The redesign introduced a cohesive modular system centered on clear task flows and consistent feedback states, giving each interaction a distinct purpose while preserving overall consistency across 200+ clinics.</p>
+        </div>
+
+        <!-- Images -->
+        <div style="margin-top:56px;display:flex;flex-direction:column;gap:16px;" class="fade-up">
+          <div style="width:100%;aspect-ratio:16/9;background:#C8C8C8;display:flex;align-items:center;justify-content:center;color:var(--ink-faint);font-size:12px;letter-spacing:0.06em;text-transform:uppercase;">Add image</div>
+          <div style="width:100%;aspect-ratio:16/9;background:#C8C8C8;display:flex;align-items:center;justify-content:center;color:var(--ink-faint);font-size:12px;letter-spacing:0.06em;text-transform:uppercase;">Add image</div>
+        </div>
+      </section>
+
+      <!-- SECTION 2: MY ROLE -->
+      <section style="padding-bottom:96px;border-bottom:1px solid var(--border);margin-bottom:96px;">
+        <p style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:24px;" class="fade-up">My Role</p>
+        <h2 class="fade-up" style="font-family:var(--serif);font-size:clamp(28px,3.5vw,48px);font-weight:400;letter-spacing:-0.02em;line-height:1.15;color:var(--ink);max-width:760px;margin-bottom:28px;">Led design vision and end-to-end delivery across two hospital networks</h2>
+        <div style="max-width:640px;" class="fade-up">
+          <p style="font-size:16px;color:var(--ink-mid);line-height:1.85;font-weight:400;margin-bottom:20px;">Owned concept through delivery, defining the component framework and interaction principles while aligning cross-functional partners — engineering, product, and clinical operations — on standards, feasibility, and phased rollout across all patient journeys.</p>
+          <p style="font-size:16px;color:var(--ink-mid);line-height:1.85;font-weight:400;">Partnered with the engineering team to translate the design system into reusable components. This enabled clinic teams to configure and launch patient communications independently, reducing design bottlenecks and accelerating delivery.</p>
+        </div>
+
+        <!-- Images -->
+        <div style="margin-top:56px;display:flex;flex-direction:column;gap:16px;" class="fade-up">
+          <div style="width:100%;aspect-ratio:16/9;background:#C8C8C8;display:flex;align-items:center;justify-content:center;color:var(--ink-faint);font-size:12px;letter-spacing:0.06em;text-transform:uppercase;">Add image</div>
+          <div style="width:100%;aspect-ratio:16/9;background:#C8C8C8;display:flex;align-items:center;justify-content:center;color:var(--ink-faint);font-size:12px;letter-spacing:0.06em;text-transform:uppercase;">Add image</div>
+          <div style="width:100%;aspect-ratio:16/9;background:#C8C8C8;display:flex;align-items:center;justify-content:center;color:var(--ink-faint);font-size:12px;letter-spacing:0.06em;text-transform:uppercase;">Add image</div>
+        </div>
+      </section>
+
+      <!-- SECTION 3: RESULTS -->
+      <section style="padding-bottom:96px;margin-bottom:64px;">
+        <p style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:24px;" class="fade-up">Results</p>
+        <h2 class="fade-up" style="font-family:var(--serif);font-size:clamp(28px,3.5vw,48px);font-weight:400;letter-spacing:-0.02em;line-height:1.15;color:var(--ink);max-width:760px;margin-bottom:28px;">Launched a modern, scalable patient experience across 200+ clinics</h2>
+        <div style="max-width:640px;" class="fade-up">
+          <p style="font-size:16px;color:var(--ink-mid);line-height:1.85;font-weight:400;margin-bottom:32px;">Patients received clearer, faster task flows with stronger confirmation states and better error recovery. A modular component system improved consistency and reduced clinical support volume while enabling faster iteration across all patient touchpoints.</p>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="font-size:16px;font-weight:600;color:var(--ink);">−38% task completion time</div>
+            <div style="font-size:16px;font-weight:600;color:var(--ink);">−22% inbound support tickets</div>
+            <div style="font-size:16px;font-weight:600;color:var(--ink);">200+ clinics on the redesigned portal</div>
+          </div>
+          <p style="font-size:12px;color:var(--ink-faint);margin-top:16px;font-style:italic;">Metrics are representative.</p>
+        </div>
+      </section>
+
+      <!-- NEXT PROJECT CARDS -->
+      <div style="margin-bottom:64px;" class="fade-up">
+        <p style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:24px;">Next project</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px 16px;">
+          <div class="project-card" onclick="showView('work')">
+            <div class="project-card-img"><img src="img2.png" alt="Checkout redesign"></div>
+            <div class="project-card-body">
+              <div><div class="project-title">Checkout redesign</div><div class="project-type">E-commerce</div></div>
+              <div class="project-year">2024</div>
+            </div>
+          </div>
+          <div class="project-card" onclick="showView('work')">
+            <div class="project-card-img"><img src="img3.png" alt="Provider scheduling tool"></div>
+            <div class="project-card-body">
+              <div><div class="project-title">Provider scheduling tool</div><div class="project-type">Healthcare</div></div>
+              <div class="project-year">2023</div>
+            </div>
+          </div>
+          <div class="project-card" onclick="showView('work')">
+            <div class="project-card-img"><img src="img4.png" alt="Design system"></div>
+            <div class="project-card-body">
+              <div><div class="project-title">Design system</div><div class="project-type">E-commerce</div></div>
+              <div class="project-year">2022</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <p>© 2026 Penelope Almonte</p>
+        <a onclick="window.scrollTo({top:0,behavior:'smooth'})">Back to top ↑</a>
+      </footer>
+    </div>
+  </div>
+
+  </div><!-- end main-content -->
+
+  <!-- SCROLL-REVEAL BOTTOM PANEL — sits BEHIND the page content -->
+  <div id="bottom-panel" style="
+    position: fixed;
+    top: 0; bottom: 0; left: 0; right: 0;
+    background: var(--ink);
+    color: var(--bg);
+    padding: 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 1;
+  ">
+    <div style="max-width:1440px;margin:0 auto;width:100%;display:flex;flex-direction:column;justify-content:space-between;height:100%;">
+    <!-- NAME TOP -->
+    <div style="display:grid;align-items:start;overflow:hidden;">
+      <div id="panel-name" style="font-family:var(--serif);font-weight:400;letter-spacing:-0.03em;line-height:1.05;color:var(--accent);font-size:clamp(48px,20.8vw,300px);transform:translateY(0.1em);">Penelope<br>Almonte</div>
+    </div>
+
+    <!-- CONTACT BOTTOM -->
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:40px;flex-wrap:wrap;padding-top:32px;border-top:1px solid rgba(253,253,253,0.1);">
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:12px;color:rgba(253,253,253,0.4);font-weight:600;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Contact</div>
+        <a href="mailto:penelope.aalmonte@gmail.com" style="font-size:16px;color:var(--bg);text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--bg)'">penelope.aalmonte@gmail.com</a>
+        <a href="tel:+13479773652" style="font-size:16px;color:rgba(253,253,253,0.5);text-decoration:none;">+1 (347) 977-3652</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:12px;color:rgba(253,253,253,0.4);font-weight:600;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Links</div>
+        <a href="https://www.linkedin.com/in/pen-almonte/" target="_blank" rel="noopener" style="font-size:16px;color:var(--bg);text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--bg)'">LinkedIn ↗</a>
+        <a href="https://yourname.substack.com" target="_blank" rel="noopener" style="font-size:16px;color:var(--bg);text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--bg)'">Substack ↗</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:12px;color:rgba(253,253,253,0.4);font-weight:600;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Based in</div>
+        <div style="font-size:16px;color:rgba(253,253,253,0.5);">New York City, USA</div>
+        <div style="font-size:12px;color:rgba(253,253,253,0.3);">Product Designer at Omnicom Production</div>
+      </div>
+      <div style="font-size:12px;color:rgba(253,253,253,0.3);align-self:flex-end;">Click anywhere to close</div>
+    </div>
+    </div>
+  </div>
+  <script>
+    function showView(name) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.getElementById('view-' + name).classList.add('active');
+      document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+      const navMap = { work: 'nav-work', about: 'nav-about', contact: 'nav-contact', 'case-study': 'nav-work' };
+      const navEl = document.getElementById(navMap[name]);
+      if (navEl) navEl.classList.add('active');
+      document.body.classList.toggle('on-about', name === 'about');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(() => {
+        const obs = new IntersectionObserver((entries) => {
+          entries.forEach((e, i) => {
+            if (e.isIntersecting) {
+              setTimeout(() => e.target.classList.add('visible'), i * 80);
+              obs.unobserve(e.target);
+            }
+          });
+        }, { threshold: 0.05 });
+        document.querySelectorAll('#view-' + name + ' .fade-up').forEach(el => {
+          el.classList.remove('visible');
+          obs.observe(el);
+        });
+      }, 50);
+    }
+    showView('work');
+
+    // Bottom panel — content slides UP to reveal panel behind
+    const panel = document.getElementById('bottom-panel');
+    const mainContent = document.getElementById('main-content');
+    let panelOpen = false;
+
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY + window.innerHeight;
+      const total = mainContent.scrollHeight;
+      if (scrolled >= total - 80 && !panelOpen) {
+        mainContent.style.transform = 'translateY(-100vh)';
+        panelOpen = true;
+      }
+      if (scrolled < total - 200 && panelOpen) {
+        mainContent.style.transform = 'translateY(0)';
+        panelOpen = false;
+      }
+    }, { passive: true });
+
+    panel.addEventListener('click', (e) => {
+      if (e.target.tagName === 'A') return;
+      mainContent.style.transform = 'translateY(0)';
+      panelOpen = false;
+      window.scrollTo({ top: mainContent.scrollHeight - window.innerHeight - 300, behavior: 'smooth' });
+    });
+  </script>
+</body>
+</html>
